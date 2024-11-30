@@ -13,46 +13,57 @@ import (
 
 type problemFunc = func(int) aoc_core.Problem
 
-var runners = map[int]problemFunc{
-	2015: aoc2015.FindProblem,
+var runners = map[int]aoc_core.Runner{
+	2015: aoc2015.NewRunner,
 }
 
 func main() {
 	yearPtr := flag.Int("year", 2015, "Year to run")
-	dayPtr := flag.Int("day", 1, "Day to run")
+	dayPtr := flag.Int("day", -1, "Day to run")
 
 	runner, ok := runners[*yearPtr]
 	if !ok {
 		log.Fatalf("Could not find a year for %d", *yearPtr)
 	}
 
-	problem := runner(*dayPtr)
-	if problem == nil {
-		log.Fatalf("Could not find problem for day %d", *dayPtr)
+	if *dayPtr == -1 {
+		inputs, err := getInputs(*yearPtr)
+		if err != nil {
+			log.Fatalf("Could not load input %+v", err)
+		}
+		log.Fatal(runner.ExecuteAll(inputs))
 	}
 
-	input, err := input(*yearPtr, *dayPtr)
+	input, err := getInput(*yearPtr, *dayPtr)
 	if err != nil {
-		log.Fatalf("Failed to load input: %+v", err)
+		log.Fatalf("Could not load input %+v", err)
 	}
-
-	partOneResult, err := problem.PartOne(input)
-	if err != nil {
-		log.Fatalf("[%d/%d] Part One failed: %+v", *yearPtr, *dayPtr, err)
-	}
-	log.Printf("[%d/%d] Part One result: %+v", *yearPtr, *dayPtr, partOneResult)
-
-	partTwoResult, err := problem.PartTwo(input)
-	if err != nil {
-		log.Fatalf("[%d/%d] Part Two failed: %+v", *yearPtr, *dayPtr, err)
-	}
-	log.Printf("[%d/%d] Part Two result: %+v", *yearPtr, *dayPtr, partTwoResult)
+	log.Fatal(runner.ExecuteProblem(input, *dayPtr))
 }
 
 //go:embed inputs
 var inputFS embed.FS
 
-func input(year, day int) ([]byte, error) {
+func getInput(year, day int) ([]byte, error) {
 	inputPath := fmt.Sprintf("inputs/%d/day%d.txt", year, day)
 	return fs.ReadFile(inputFS, inputPath)
+}
+
+func getInputs(year int) ([][]byte, error) {
+	inputPath := fmt.Sprintf("inputs/%d", year)
+	entries, err := fs.ReadDir(inputFS, inputPath)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([][]byte, len(entries))
+	for idx, entry := range entries {
+		dayInputPath := fmt.Sprintf("%s/%s", inputPath, entry.Name())
+		result, err := fs.ReadFile(inputFS, dayInputPath)
+		if err != nil {
+			return nil, err
+		}
+		results[idx] = result
+	}
+	return results, nil
 }
