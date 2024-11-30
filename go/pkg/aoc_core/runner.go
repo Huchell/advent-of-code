@@ -41,5 +41,12 @@ func executeProblem(input []byte, problem Problem) error {
 	}
 
 	log.Printf("Part One result: %+v", result)
+
+	result, err = problem.PartTwo(input)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Part Two result: %+v", result)
 	return nil
 }
