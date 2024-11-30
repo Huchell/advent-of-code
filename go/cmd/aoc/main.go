@@ -11,21 +11,23 @@ import (
 	"huchell/aoc/pkg/aoc_core"
 )
 
-type problemFunc = func(int) aoc_core.Problem
+type runnerFunc = func() aoc_core.Runner
 
-var runners = map[int]aoc_core.Runner{
+var runners = map[int]runnerFunc{
 	2015: aoc2015.NewRunner,
 }
 
 func main() {
 	yearPtr := flag.Int("year", 2015, "Year to run")
 	dayPtr := flag.Int("day", -1, "Day to run")
+	flag.Parse()
 
-	runner, ok := runners[*yearPtr]
+	runnerFunc, ok := runners[*yearPtr]
 	if !ok {
 		log.Fatalf("Could not find a year for %d", *yearPtr)
 	}
 
+	runner := runnerFunc()
 	if *dayPtr == -1 {
 		inputs, err := getInputs(*yearPtr)
 		if err != nil {
@@ -38,7 +40,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not load input %+v", err)
 	}
-	log.Fatal(runner.ExecuteProblem(input, *dayPtr))
+	log.Fatal(runner.ExecuteProblem(input, *dayPtr-1))
 }
 
 //go:embed inputs

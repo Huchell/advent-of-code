@@ -2,48 +2,38 @@ package aoc2015
 
 import "testing"
 
-type testCase struct {
-	string
-	int
-}
-
-func TestDayOnePartOne(t *testing.T) {
+func TestDayTwoPartOne(t *testing.T) {
 	tests := []testCase{
-		{"(())", 0},
-		{"()()", 0},
-		{"(((", 3},
-		{"(()(()(", 3},
-		{"))(((((", 3},
-		{"())", -1},
-		{"))(", -1},
-		{")))", -3},
-		{")())())", -3},
+		{"2x3x4", 58},
+		{"1x1x10", 43},
 	}
 
-	problem := DayOne{}
+	problem := DayTwo{}
 	for _, testCase := range tests {
 		result, err := problem.PartOne([]byte(testCase.string))
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		if result != testCase.int {
 			t.Fatalf("%s, %d != %d", testCase.string, result, testCase.int)
 		}
 	}
 }
 
-func TestDayOnePartTwo(t *testing.T) {
+func TestDayTwoPartTwo(t *testing.T) {
 	tests := []testCase{
-		{")", 1},
-		{"()())", 5},
+		{"2x3x4", 34},
+		{"1x1x10", 14},
 	}
 
-	problem := DayOne{}
+	problem := DayTwo{}
 	for _, testCase := range tests {
 		result, err := problem.PartTwo([]byte(testCase.string))
 		if err != nil {
 			t.Fatal(err)
 		}
+
 		if result != testCase.int {
 			t.Fatalf("%s, %d != %d", testCase.string, result, testCase.int)
 		}

@@ -2,6 +2,7 @@ package aoc_core
 
 import (
 	"errors"
+	"fmt"
 	"log"
 )
 
@@ -27,8 +28,8 @@ func (runner *Runner) ExecuteAll(input [][]byte) error {
 
 func (runner *Runner) ExecuteProblem(input []byte, day int) error {
 	problem := runner.problems[day]
-	if problem != nil {
-		return errors.New("DayNotFound")
+	if problem == nil {
+		return errors.New(fmt.Sprintf("DayNotFound: %d", day))
 	}
 	executeProblem(input, problem)
 	return nil

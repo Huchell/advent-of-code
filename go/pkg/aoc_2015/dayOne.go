@@ -37,5 +37,5 @@ func (day DayOne) PartTwo(input []byte) (any, error) {
 			return idx + 1, nil
 		}
 	}
-	return nil, errors.New("NoIndexFound")
+	return -1, errors.New("NoIndexFound")
 }
