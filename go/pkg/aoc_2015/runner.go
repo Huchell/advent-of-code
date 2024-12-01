@@ -6,5 +6,6 @@ func NewRunner() aoc_core.Runner {
 	return aoc_core.NewRunner(
 		DayOne{},
 		DayTwo{},
+		DayThree{},
 	)
 }

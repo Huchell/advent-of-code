@@ -27,6 +27,10 @@ func (runner *Runner) ExecuteAll(input [][]byte) error {
 }
 
 func (runner *Runner) ExecuteProblem(input []byte, day int) error {
+	if len(runner.problems) <= day {
+		return errors.New(fmt.Sprintf("DayToLarge: %d", day))
+	}
+
 	problem := runner.problems[day]
 	if problem == nil {
 		return errors.New(fmt.Sprintf("DayNotFound: %d", day))
