@@ -9,6 +9,7 @@ import (
 	"log"
 
 	aoc2015 "huchell/aoc/pkg/aoc_2015"
+	aoc2024 "huchell/aoc/pkg/aoc_2024"
 	"huchell/aoc/pkg/aoc_core"
 )
 
@@ -16,6 +17,7 @@ type runnerFunc = func() aoc_core.Runner
 
 var runners = map[int]runnerFunc{
 	2015: aoc2015.NewRunner,
+	2024: aoc2024.NewRunner,
 }
 
 func main() {
