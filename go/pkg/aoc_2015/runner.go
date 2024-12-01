@@ -7,5 +7,6 @@ func NewRunner() aoc_core.Runner {
 		DayOne{},
 		DayTwo{},
 		DayThree{},
+		DayFour{},
 	)
 }

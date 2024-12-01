@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"embed"
 	"flag"
 	"fmt"
@@ -48,7 +49,11 @@ var inputFS embed.FS
 
 func getInput(year, day int) ([]byte, error) {
 	inputPath := fmt.Sprintf("inputs/%d/day%d.txt", year, day)
-	return fs.ReadFile(inputFS, inputPath)
+	input, err := fs.ReadFile(inputFS, inputPath)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.TrimSpace(input), nil
 }
 
 func getInputs(year int) ([][]byte, error) {
@@ -65,7 +70,7 @@ func getInputs(year int) ([][]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		results[idx] = result
+		results[idx] = bytes.TrimSpace(result)
 	}
 	return results, nil
 }
