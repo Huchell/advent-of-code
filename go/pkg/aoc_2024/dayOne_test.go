@@ -1,6 +1,10 @@
 package aoc2024
 
-import "testing"
+import (
+	"testing"
+
+	"huchell/aoc/pkg/assert"
+)
 
 func TestDayOnePartOne(t *testing.T) {
 	input := []byte(`3   4
@@ -11,13 +15,8 @@ func TestDayOnePartOne(t *testing.T) {
 3   3
 `)
 	result, err := DayOne{}.PartOne(input)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if result != 11 {
-		t.Fatalf("%d != 11", result)
-	}
+	assert.ErrorIsNil(t, err)
+	assert.IsEqualTest(t, result, 11)
 }
 
 func TestDayOnePartTwo(t *testing.T) {
@@ -30,11 +29,6 @@ func TestDayOnePartTwo(t *testing.T) {
 `)
 
 	result, err := DayOne{}.PartTwo(input)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if result != 31 {
-		t.Fatalf("%d != 31", result)
-	}
+	assert.ErrorIsNil(t, err)
+	assert.IsEqualTest(t, result, 31)
 }
