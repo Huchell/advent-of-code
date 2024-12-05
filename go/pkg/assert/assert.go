@@ -9,7 +9,7 @@ func ErrorIsNil(t *testing.T, err error) {
 	t.Fatal(err)
 }
 
-func IsEqualTest[T comparable](t *testing.T, result, expected T) {
+func IsEqual[T comparable](t *testing.T, result, expected T) {
 	if result == expected {
 		return
 	}
