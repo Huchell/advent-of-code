@@ -3,8 +3,9 @@ package aoc2024
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"slices"
+
+	"huchell/aoc/pkg/math"
 )
 
 type DayFour struct{}
@@ -15,10 +16,10 @@ func (DayFour) PartOne(input []byte) (any, error) {
 	instances := 0
 	for rowIdx := 0; rowIdx < grid.height; rowIdx++ {
 		for colIdx := 0; colIdx < grid.width; colIdx++ {
-			ch := grid.cells[rowIdx][colIdx]
+			pos := math.NewPosition(colIdx, rowIdx)
+			ch := grid.Cell(pos)
 			switch ch {
 			case 'X':
-				pos := Position{X: colIdx, Y: rowIdx}
 				cellInstances := grid.InstancesOf(pos, []byte("XMAS"))
 				instances += cellInstances
 				break
@@ -37,10 +38,10 @@ func (DayFour) PartTwo(input []byte) (any, error) {
 	instances := 0
 	for rowIdx := 0; rowIdx < grid.height; rowIdx++ {
 		for colIdx := 0; colIdx < grid.width; colIdx++ {
-			ch := grid.cells[rowIdx][colIdx]
+			pos := math.NewPosition(colIdx, rowIdx)
+			ch := grid.Cell(pos)
 			switch ch {
 			case 'A':
-				pos := Position{X: colIdx, Y: rowIdx}
 				if checkForX_MAS(grid, pos) {
 					instances += 1
 				}
@@ -54,13 +55,13 @@ func (DayFour) PartTwo(input []byte) (any, error) {
 	return instances, nil
 }
 
-func checkForX_MAS(grid DayFourGrid, pos Position) bool {
-	positions := []Position{
-		{X: pos.X - 1, Y: pos.Y - 1},
-		{X: pos.X + 1, Y: pos.Y - 1},
+func checkForX_MAS(grid DayFourGrid, pos math.Position) bool {
+	positions := []math.Position{
+		pos.Relative(-1, -1),
+		pos.Relative(1, -1),
 		pos,
-		{X: pos.X - 1, Y: pos.Y + 1},
-		{X: pos.X + 1, Y: pos.Y + 1},
+		pos.Relative(-1, 1),
+		pos.Relative(1, 1),
 	}
 
 	if !grid.InBoundsSlice(positions) {
@@ -114,60 +115,48 @@ type DayFourGrid struct {
 	cells  [][]byte
 }
 
-type Position struct {
-	X int
-	Y int
-}
-
-func (pos Position) String() string {
-	return fmt.Sprintf("{ X:%d, Y:%d }", pos.X, pos.Y)
-}
-
-func (grid DayFourGrid) InstancesOf(pos Position, str []byte) int {
+func (grid DayFourGrid) InstancesOf(pos math.Position, str []byte) int {
 	instances := 0
-	if grid.checkInstanceOf(pos, str, Position{X: -1, Y: 0}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(-1, 0)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: -1, Y: -1}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(-1, -1)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: 0, Y: -1}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(0, -1)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: 1, Y: -1}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(1, -1)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: 1, Y: 0}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(1, 0)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: 1, Y: 1}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(1, 1)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: 0, Y: 1}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(0, 1)) {
 		instances += 1
 	}
-	if grid.checkInstanceOf(pos, str, Position{X: -1, Y: 1}) {
+	if grid.checkInstanceOf(pos, str, math.NewPosition(-1, 1)) {
 		instances += 1
 	}
 
 	return instances
 }
 
-func (grid DayFourGrid) checkInstanceOf(pos Position, str []byte, dir Position) bool {
+func (grid DayFourGrid) checkInstanceOf(pos math.Position, str []byte, dir math.Position) bool {
 	strLen := len(str)
 
-	endX := pos.X + (strLen-1)*dir.X
-	if endX < 0 || endX >= grid.width {
-		return false
-	}
-	endY := pos.Y + (strLen-1)*dir.Y
-	if endY < 0 || endY >= grid.height {
+	endPos := pos.Relative((strLen-1)*dir.X(), (strLen-1)*dir.Y())
+	if !endPos.InBounds(0, grid.width-1, 0, grid.height-1) {
 		return false
 	}
 
 	slice := make([]byte, strLen)
 	for idx := 0; idx < strLen; idx++ {
-		cell := grid.cells[pos.Y+idx*dir.Y][pos.X+idx*dir.X]
+		cellPos := pos.Relative(idx*dir.X(), idx*dir.Y())
+		cell := grid.Cell(cellPos)
 		slice[idx] = cell
 	}
 
@@ -182,18 +171,15 @@ func (grid DayFourGrid) checkInstanceOf(pos Position, str []byte, dir Position) 
 	return false
 }
 
-func (grid DayFourGrid) InBoundsSlice(positions []Position) bool {
+func (grid DayFourGrid) InBoundsSlice(positions []math.Position) bool {
 	for _, pos := range positions {
-		if pos.X < 0 || pos.X >= grid.width {
-			return false
-		}
-		if pos.Y < 0 || pos.Y >= grid.height {
+		if !pos.InBounds(0, grid.width-1, 0, grid.height-1) {
 			return false
 		}
 	}
 	return true
 }
 
-func (grid DayFourGrid) Cell(pos Position) byte {
-	return grid.cells[pos.Y][pos.X]
+func (grid DayFourGrid) Cell(pos math.Position) byte {
+	return grid.cells[pos.Y()][pos.X()]
 }

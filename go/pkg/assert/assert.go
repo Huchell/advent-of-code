@@ -1,17 +1,17 @@
 package assert
 
-import "testing"
+import "log"
 
-func ErrorIsNil(t *testing.T, err error) {
+func ErrorIsNil(err error) {
 	if err == nil {
 		return
 	}
-	t.Fatal(err)
+	log.Fatal(err)
 }
 
-func IsEqual[T comparable](t *testing.T, result, expected T) {
+func IsEqual[T comparable](result, expected T) {
 	if result == expected {
 		return
 	}
-	t.Fatalf("%+v != %+v\n\tExpected: %+v\n\tResult: %+v", result, expected, expected, result)
+	log.Fatalf("%+v != %+v\n\tExpected: %+v\n\tResult: %+v", result, expected, expected, result)
 }

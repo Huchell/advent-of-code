@@ -18,8 +18,8 @@ MAMMMXMMMM
 MXMXAXMASX`)
 
 	result, err := DayFour{}.PartOne(input)
-	assert.ErrorIsNil(t, err)
-	assert.IsEqual(t, result, 18)
+	assert.TestErrorIsNil(t, err)
+	assert.TestIsEqual(t, result, 18)
 }
 
 func TestDayFourPartTwo(t *testing.T) {
@@ -35,6 +35,6 @@ MAMMMXMMMM
 MXMXAXMASX`)
 
 	result, err := DayFour{}.PartTwo(input)
-	assert.ErrorIsNil(t, err)
-	assert.IsEqual(t, result, 9)
+	assert.TestErrorIsNil(t, err)
+	assert.TestIsEqual(t, result, 9)
 }

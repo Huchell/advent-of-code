@@ -14,8 +14,8 @@ func TestDayTwoPartOne(t *testing.T) {
 1 3 6 7 9`)
 
 	result, err := DayTwo{}.PartOne(input)
-	assert.ErrorIsNil(t, err)
-	assert.IsEqual(t, result, 2)
+	assert.TestErrorIsNil(t, err)
+	assert.TestIsEqual(t, result, 2)
 }
 
 func TestDayTwoPartTwo(t *testing.T) {
@@ -27,11 +27,6 @@ func TestDayTwoPartTwo(t *testing.T) {
 1 3 6 7 9`)
 
 	result, err := DayTwo{}.PartTwo(input)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if result != 4 {
-		t.Fatalf("%d != 4", result)
-	}
+	assert.TestErrorIsNil(t, err)
+	assert.TestIsEqual(t, result, 4)
 }
